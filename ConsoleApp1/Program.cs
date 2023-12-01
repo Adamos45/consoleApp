@@ -5,18 +5,7 @@ using System.Text.RegularExpressions;
 
 var input = File.ReadAllLines("C:\\Users\\Adam\\source\\repos\\consoleApp\\ConsoleApp1\\input.txt");
 
-var dict = new Dictionary<string, string>
-{
-    {"one", "1" },
-    {"two", "2" },
-    {"three", "3" },
-    {"four", "4" },
-    {"five", "5" },
-    {"six", "6" },
-    {"seven", "7" },
-    {"eight", "8" },
-    {"nine", "9" },
-};
+var dict = new Dictionary<string, string> { { "one", "1" }, { "two", "2" }, { "three", "3" }, { "four", "4" }, { "five", "5" }, { "six", "6" }, { "seven", "7" }, { "eight", "8" }, { "nine", "9" }, };
 
 var sum = input.Aggregate(0, (current, line) =>
 {
