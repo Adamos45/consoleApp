@@ -21,18 +21,13 @@ var dict = new Dictionary<string, string>
 var sum = input.Aggregate(0, (current, line) =>
 {
     var pattern = string.Join("|", dict.Keys) + "|1|2|3|4|5|6|7|8|9";
-    var leftMatch = Regex.Match(line, pattern).Value;
-    if (dict.TryGetValue(leftMatch, out string? valueL))
-        leftMatch = valueL;
+    var leftMatch = GetDigit(Regex.Match(line, pattern).Value);
+    var rightMatch = GetDigit(Regex.Match(line, pattern, RegexOptions.RightToLeft).Value);
 
-    var rightMatch = Regex.Match(line, pattern, RegexOptions.RightToLeft).Value;
-    if (dict.TryGetValue(rightMatch, out string? valueR))
-        rightMatch = valueR;
-
-    var num = leftMatch + rightMatch;
-
-    return current + int.Parse(num);
+    return current + int.Parse(leftMatch + rightMatch);
 });
+
+string GetDigit(string input) => dict.TryGetValue(input, out string? value) ? value : input;
 
 
 Console.WriteLine(sum);
