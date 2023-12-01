@@ -18,13 +18,9 @@ var dict = new Dictionary<string, string>
     {"nine", "9" },
 };
 
-
-Stopwatch sw = new Stopwatch();
-
-sw.Start();
 var sum = input.Aggregate(0, (current, line) =>
 {
-    var pattern = @"one|two|three|four|five|six|seven|eight|nine|1|2|3|4|5|6|7|8|9";
+    var pattern = string.Join("|", dict.Keys) + "|1|2|3|4|5|6|7|8|9";
     var leftMatch = Regex.Match(line, pattern).Value;
     if (dict.TryGetValue(leftMatch, out string? valueL))
         leftMatch = valueL;
@@ -38,7 +34,5 @@ var sum = input.Aggregate(0, (current, line) =>
     return current + int.Parse(num);
 });
 
-sw.Stop();
-Console.WriteLine("Elapsed={0}", sw.Elapsed.TotalNanoseconds);
 
 Console.WriteLine(sum);
