@@ -1,63 +1,44 @@
 ﻿using System.Collections;
-using System.Runtime.Intrinsics.Arm;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 
 var input = File.ReadAllLines("C:\\Users\\Adam\\source\\repos\\consoleApp\\ConsoleApp1\\input.txt");
 
+var dict = new Dictionary<string, string>
+{
+    {"one", "1" },
+    {"two", "2" },
+    {"three", "3" },
+    {"four", "4" },
+    {"five", "5" },
+    {"six", "6" },
+    {"seven", "7" },
+    {"eight", "8" },
+    {"nine", "9" },
+};
+
+
+Stopwatch sw = new Stopwatch();
+
+sw.Start();
 var sum = input.Aggregate(0, (current, line) =>
 {
-    var arrNums = new int[9];
-    arrNums[0] = line.IndexOf(Digits.one.ToString());
-    arrNums[1] = line.IndexOf(Digits.two.ToString());
-    arrNums[2] = line.IndexOf(Digits.three.ToString());
-    arrNums[3] = line.IndexOf(Digits.four.ToString());
-    arrNums[4] = line.IndexOf(Digits.five.ToString());
-    arrNums[5] = line.IndexOf(Digits.six.ToString());
-    arrNums[6] = line.IndexOf(Digits.seven.ToString());
-    arrNums[7] = line.IndexOf(Digits.eight.ToString());
-    arrNums[8] = line.IndexOf(Digits.nine.ToString());
+    var pattern = @"one|two|three|four|five|six|seven|eight|nine|1|2|3|4|5|6|7|8|9";
+    var leftMatch = Regex.Match(line, pattern).Value;
+    if (dict.TryGetValue(leftMatch, out string? valueL))
+        leftMatch = valueL;
 
-    var minWordIndex = arrNums.Select(x => x == -1 ? int.MaxValue : x).Min(x => x);
-    var minDigitIndex = line.IndexOfAny(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
-    if (minDigitIndex == -1)
-        minDigitIndex = int.MaxValue;
+    var rightMatch = Regex.Match(line, pattern, RegexOptions.RightToLeft).Value;
+    if (dict.TryGetValue(rightMatch, out string? valueR))
+        rightMatch = valueR;
 
-    var firstVal = minWordIndex < minDigitIndex ? arrNums.ToList().IndexOf(minWordIndex) + 1 : int.Parse(line[minDigitIndex].ToString());
+    var num = leftMatch + rightMatch;
 
-
-    arrNums = new int[9];
-    arrNums[0] = line.LastIndexOf(Digits.one.ToString());
-    arrNums[1] = line.LastIndexOf(Digits.two.ToString());
-    arrNums[2] = line.LastIndexOf(Digits.three.ToString());
-    arrNums[3] = line.LastIndexOf(Digits.four.ToString());
-    arrNums[4] = line.LastIndexOf(Digits.five.ToString());
-    arrNums[5] = line.LastIndexOf(Digits.six.ToString());
-    arrNums[6] = line.LastIndexOf(Digits.seven.ToString());
-    arrNums[7] = line.LastIndexOf(Digits.eight.ToString());
-    arrNums[8] = line.LastIndexOf(Digits.nine.ToString());
-
-    var maxWordIndex = arrNums.Max(x => x);
-    var maxDigitIndex = line.LastIndexOfAny(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
-
-    var secondVal = maxWordIndex > maxDigitIndex ? arrNums.ToList().IndexOf(maxWordIndex) + 1 : int.Parse(line[maxDigitIndex].ToString());
-
-    var val = int.Parse(firstVal.ToString() + secondVal.ToString());
-
-    return current + val;
-
+    return current + int.Parse(num);
 });
 
-Console.WriteLine(sum);
+sw.Stop();
+Console.WriteLine("Elapsed={0}", sw.Elapsed.TotalNanoseconds);
 
-enum Digits
-{
-    one = 1,
-    two,
-    three,
-    four,
-    five,
-    six,
-    seven,
-    eight,
-    nine
-};
+Console.WriteLine(sum);
